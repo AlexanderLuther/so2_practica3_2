@@ -1,0 +1,16 @@
+cpu_grupo2.mod.c
+cpu_grupo2.ko
+cpu_grupo2.mod
+cpu_grupo2.mod.c
+cpu_grupo2.mod.o
+cpu_grupo2.o
+modules.order
+Module.symvers
+.cpu_grupo2.ko.cmd
+.cpu_grupo2.ko.cmd
+.cpu_grupo2.mod.cmd
+.cpu_grupo2.mod.o.cmd
+.cpu_grupo2.o.cmd
+
+
+

@@ -1,0 +1,11 @@
+mem_grupo2.mod.c     
+mem_grupo2.mod.o       
+mem_grupo2.o       
+modules.order
+mem_grupo2.ko  
+mem_grupo2.mod 
+Module.symvers
+.mem_grupo2.mod.cmd  
+.mem_grupo2.mod.o.cmd  
+.mem_grupo2.o.cmd  
+.mem_grupo2.ko.cmd

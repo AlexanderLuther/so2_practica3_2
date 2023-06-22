@@ -1,0 +1,9 @@
+Grupo No.2
+
+Integrantes:
+    1. 201504236 - Adriana Marie Gomez Davila
+    2. 201212644 - Jose Carlos Estrada Garcia
+    3. 201730457 - Helmuth Alexander Luther Montejo
+
+Repositorio:
+    https://github.com/AlexanderLuther/so2_practica1_2.git
