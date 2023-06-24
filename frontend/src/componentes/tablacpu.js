@@ -220,10 +220,14 @@ export default function TablaCPU() {
     }
 
     async function setMemoryAssignments(id) {
+        toast.info("Obteniendo asignaciones de memoria", {
+            position: toast.POSITION.TOP_RIGHT
+        });
         const req = await getMemoryAssignments(id);
         const res = await req.json();
+
         if(res == ''){
-            toast.info("Proceso sin asignaciones de memoria", {
+            toast.warning("Proceso sin asignaciones de memoria", {
                 position: toast.POSITION.TOP_RIGHT
             });
         } else{
@@ -389,10 +393,11 @@ export default function TablaCPU() {
                                 <TableHead>
                                     <TableRow>
                                         <StyledTableCell align="center">DIRECCIÓN DE MEMORIA VIRTUAL</StyledTableCell>
-                                        <StyledTableCell align="center">TAMAÑO</StyledTableCell>
                                         <StyledTableCell align="center">PERMISOS</StyledTableCell>
                                         <StyledTableCell align="center">DISPOSITIVO</StyledTableCell>
                                         <StyledTableCell align="center">ARCHIVO</StyledTableCell>
+                                        <StyledTableCell align="center">RSS(Memoria Física)</StyledTableCell>
+                                        <StyledTableCell align="center">SIZE(Memoria Virtual)</StyledTableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -402,10 +407,11 @@ export default function TablaCPU() {
                                             return (
                                                 <StyledTableRow key={row.idassignment}>
                                                     <TableCell align="center">{row.address}</TableCell>
-                                                    <TableCell align="center">{row.size}</TableCell>
-                                                    <TableCell align="center">{row.permisions}</TableCell>
+                                                    <TableCell align="center">{row.permissions}</TableCell>
                                                     <TableCell align="center">{row.device}</TableCell>
                                                     <TableCell align="center">{row.file}</TableCell>
+                                                    <TableCell align="center">{row.rss} MB</TableCell>
+                                                    <TableCell align="center">{row.size} MB</TableCell>
                                                 </StyledTableRow>
                                             );
                                         })}

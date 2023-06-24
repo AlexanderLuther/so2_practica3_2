@@ -17,7 +17,7 @@ export default function Inicio() {
         <>
             <div className='TituloInicio'>
                 <h1>
-                    PRACTICA No. 1
+                    PRACTICA No. 3
                 </h1>
                 <Typography variant="body1" gutterBottom>
                     Haz clic en el botón para comenzar a monitoriar la memoria RAM y los procesos del CPU.
