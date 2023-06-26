@@ -1,10 +1,12 @@
 package ram
 
 import (
+	"encoding/json"
 	"log"
 	"net/http"
 	"os/exec"
 	"so2_practica3_2/backend/commons"
+	ram "so2_practica3_2/backend/dao/ram"
 )
 
 /**
@@ -23,5 +25,9 @@ func GetRAM(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	commons.SendResponse(w, http.StatusOK, moduleData)
+	var ramData ram.RAM
+	json.Unmarshal(moduleData, &ramData)
+	jsonData, _ := json.Marshal(&ramData)
+
+	commons.SendResponse(w, http.StatusOK, jsonData)
 }

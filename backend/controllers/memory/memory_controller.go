@@ -3,6 +3,7 @@ package memory
 import (
 	"encoding/json"
 	"log"
+	"math"
 	"net/http"
 	"os/exec"
 	"so2_practica3_2/backend/commons"
@@ -27,6 +28,8 @@ import (
  */
 func GetMemoryAssignment(w http.ResponseWriter, r *http.Request) {
 	pid := mux.Vars(r)["id"]
+	var residentMemory float64 = 0
+	var virtualMemory float64 = 0
 
 	command := exec.Command("sh", "-c", "cat /proc/"+pid+"/maps")
 	mapsData, catError := command.CombinedOutput()
@@ -41,14 +44,16 @@ func GetMemoryAssignment(w http.ResponseWriter, r *http.Request) {
 	var lines []string = strings.Split(strings.ReplaceAll(string(mapsData[:]), "\r\n", "\n"), "\n")
 
 	//Iniciar slice en donde se almacenaran los datos
-	assignments := make([]memory.MEMORY, 0, len(lines))
+	//assignments := make([]memory.MEMORY, 0, len(lines))
+	var assignments memory.MEMORY
+	assignments.Assignments = make([]memory.ASSIGNMENT, 0, len(lines))
 
 	//Recorrer cada una de las lineas
 	for i := 0; i < len(lines)-1; i++ {
 
 		//Obtener cada columna y setear el valor de la estructura MEMORY
 		data := strings.Fields(lines[i])
-		assignment := memory.MEMORY{
+		assignment := memory.ASSIGNMENT{
 			Address: data[0],
 			Device:  data[3],
 		}
@@ -87,9 +92,15 @@ func GetMemoryAssignment(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		residentMemory = residentMemory + assignment.Rss
+		virtualMemory = virtualMemory + assignment.Size
+
 		//Agregar la estructura actual al slice
-		assignments = append(assignments, assignment)
+		assignments.Assignments = append(assignments.Assignments, assignment)
 	}
+
+	assignments.ResidentMemory = math.Round(residentMemory*100) / 100
+	assignments.VirtualMemory = math.Round(virtualMemory*100) / 100
 
 	jsonData, _ := json.Marshal(assignments)
 	commons.SendResponse(w, http.StatusOK, jsonData)
@@ -105,7 +116,7 @@ func GetMemoryAssignment(w http.ResponseWriter, r *http.Request) {
  * return true, si todo se realizo con éxito
  *        false, si hubo un error obteniendo los datos.
  */
-func setRssAndSize(assignment *memory.MEMORY, pid string) bool {
+func setRssAndSize(assignment *memory.ASSIGNMENT, pid string) bool {
 	command := exec.Command("sh", "-c", "cat /proc/"+pid+"/smaps | grep "+assignment.Address+" -A 4 | grep -E 'Rss|^Size'")
 	data, catError := command.CombinedOutput()
 
@@ -118,8 +129,8 @@ func setRssAndSize(assignment *memory.MEMORY, pid string) bool {
 	size, _ := strconv.ParseFloat(strings.Fields(lines[0])[1], 64)
 	rss, _ := strconv.ParseFloat(strings.Fields(lines[1])[1], 64)
 
-	assignment.Size = size / 1024
-	assignment.Rss = rss / 1024
+	assignment.Size = math.Round((size/1024)*100) / 100
+	assignment.Rss = math.Round((rss/1024)*100) / 100
 
 	return true
 }

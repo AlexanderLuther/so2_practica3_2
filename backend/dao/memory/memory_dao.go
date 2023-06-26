@@ -1,6 +1,12 @@
 package memory
 
 type MEMORY struct {
+	Assignments    []ASSIGNMENT `json:"assignments"`
+	ResidentMemory float64      `json:"residentMemory"`
+	VirtualMemory  float64      `json:"virtualMemory"`
+}
+
+type ASSIGNMENT struct {
 	Address     string  `json:"address"`
 	Permissions string  `json:"permissions"`
 	Device      string  `json:"device"`

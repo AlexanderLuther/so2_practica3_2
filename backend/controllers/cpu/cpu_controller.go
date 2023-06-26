@@ -25,6 +25,12 @@ import (
  * @return Estructura CPU con toda la informacion obtenida del modulo de cpu.
  */
 func GetCPU(w http.ResponseWriter, r *http.Request) {
+	totalProcesses := 0
+	runningProcesses := 0
+	stoppedProcesses := 0
+	sleepingProcesses := 0
+	zombieProcesses := 0
+
 	//Obtener procesos
 	command := exec.Command("sh", "-c", "cat /proc/cpu_grupo2")
 	moduleData, commandError := command.CombinedOutput()
@@ -47,24 +53,30 @@ func GetCPU(w http.ResponseWriter, r *http.Request) {
 	//Completar datos de cada uno de los procesos
 	for i := 0; i < len(processes.Root); i++ {
 
-		//Establecer el estado del proceso en base al numero de estado que devuelve el modulo.
+		//Establecer el estado del proceso y aumentar contadores en base al numero de estado que devuelve el modulo.
 		switch processes.Root[i].State {
 		case "0":
 			processes.Root[i].State = "Running"
+			runningProcesses++
 			break
 		case "1":
 			processes.Root[i].State = "Sleeping"
+			sleepingProcesses++
 			break
 		case "2":
 			processes.Root[i].State = "Sleeping"
+			sleepingProcesses++
 			break
 		case "4":
 			processes.Root[i].State = "Stopped"
+			stoppedProcesses++
 			break
 		case "1026":
 			processes.Root[i].State = "Zombie"
+			zombieProcesses++
 			break
 		}
+		totalProcesses++
 
 		//Establecer el usuario del proceso en base al numero de usuario que devuelve el modulo.
 		command := exec.Command("sh", "-c", "getent passwd "+processes.Root[i].User+" | cut -d ':' -f 1 ")
@@ -84,24 +96,36 @@ func GetCPU(w http.ResponseWriter, r *http.Request) {
 				switch processes.Root[i].Children[j].State {
 				case "0":
 					processes.Root[i].Children[j].State = "Running"
+					runningProcesses++
 					break
 				case "1":
 					processes.Root[i].Children[j].State = "Sleeping"
+					sleepingProcesses++
 					break
 				case "2":
 					processes.Root[i].Children[j].State = "Sleeping"
+					sleepingProcesses++
 					break
 				case "4":
 					processes.Root[i].Children[j].State = "Stopped"
+					stoppedProcesses++
 					break
 				case "1026":
 					processes.Root[i].Children[j].State = "Zombie"
+					zombieProcesses++
 					break
 				}
+				totalProcesses++
 			}
 		}
 
 	}
+
+	processes.TotalProcesses = int64(totalProcesses)
+	processes.TotalRunning = int64(runningProcesses)
+	processes.TotalSleeping = int64(sleepingProcesses)
+	processes.TotalStopped = int64(stoppedProcesses)
+	processes.TotalZombie = int64(zombieProcesses)
 
 	jsonData, _ := json.Marshal(&processes)
 	commons.SendResponse(w, http.StatusOK, jsonData)
