@@ -6,4 +6,4 @@ Integrantes:
     3. 201730457 - Helmuth Alexander Luther Montejo
 
 Repositorio:
-    https://github.com/AlexanderLuther/so2_practica1_2.git
+    https://github.com/AlexanderLuther/so2_practica3_2.git
