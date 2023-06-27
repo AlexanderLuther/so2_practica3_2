@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 export function Card({title, value}){
     return (
         <React.Fragment>
-            <CardContent sx={{ backgroundColor: '#00B650' }}>
+            <CardContent>
                 <Typography sx={{ mb: 2.5, alignContent: 'center' }} variant="h5" color="black">
                     {title.toUpperCase()}
                 </Typography>
